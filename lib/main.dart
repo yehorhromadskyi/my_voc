@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_voc/models/search_history_model.dart';
 import 'package:my_voc/screens/home_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,7 +15,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: ChangeNotifierProvider(
+        create: (context) => SearchHistoryModel(),
+        child: HomeScreen(),
+      ),
     );
   }
 }

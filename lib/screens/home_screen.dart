@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_voc/screens/my_words_screen.dart';
+import 'package:my_voc/screens/history_screen.dart';
 import 'package:my_voc/screens/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -9,7 +9,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  List<Widget> _screens = [SearchScreen(), MyWordsScreen()];
+  List<Widget> _screens = [SearchScreen(), HistoryScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list_alt),
-            label: 'My Words',
+            label: 'History',
           ),
         ],
         currentIndex: _selectedIndex,
