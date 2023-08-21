@@ -30,10 +30,8 @@ class _SearchScreenState extends State<SearchScreen> {
               children: [
                 TextButton(
                   onPressed: () async {
-                    if (_pronunciation != null) {
-                      var duration = await player.setUrl(_pronunciation);
-                      player.play();
-                    }
+                    var duration = await player.setUrl(_pronunciation);
+                    player.play();
                   },
                   child: Icon(
                     Icons.volume_up_rounded,
