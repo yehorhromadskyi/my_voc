@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SearchHistoryModel extends ChangeNotifier {
+class SearchHistoryProvider extends ChangeNotifier {
   final List<String> _history = [];
 
   List<String> get history => _history;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_voc/models/search_history_model.dart';
+import 'package:my_voc/providers/api_service_provider.dart';
+import 'package:my_voc/providers/search_history_provider.dart';
 import 'package:my_voc/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -15,8 +16,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ChangeNotifierProvider(
-        create: (context) => SearchHistoryModel(),
+      home: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => SearchHistoryProvider()),
+          ChangeNotifierProvider(create: (_) => ApiServiceProvider())
+        ],
         child: HomeScreen(),
       ),
     );
