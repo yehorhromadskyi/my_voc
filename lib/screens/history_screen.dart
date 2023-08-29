@@ -9,14 +9,31 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   @override
+  void initState() {
+    super.initState();
+
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    var provider = Provider.of<SearchHistoryProvider>(context, listen: false);
+    await provider.loadHistory();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<SearchHistoryProvider>(
-      builder: (context, value, child) => Container(
+      builder: (context, provider, child) => Container(
         child: ListView.builder(
           padding: const EdgeInsets.all(8.0),
-          itemCount: value.history.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Text(value.history[index]);
+          itemCount: provider.history.length,
+          itemBuilder: (context, index) {
+            return Text(
+              provider.history[index].word,
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            );
           },
         ),
       ),

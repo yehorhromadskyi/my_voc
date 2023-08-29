@@ -19,7 +19,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<SearchHistoryProvider>(
-      builder: (context, value, child) => Container(
+      builder: (context, provider, child) => Container(
         padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
         child: Column(
           children: [
@@ -45,8 +45,9 @@ class _SearchScreenState extends State<SearchScreen> {
                         Provider.of<ApiServiceProvider>(context, listen: false);
                     var entry = await apiServiceProvider.apiService
                         .getEntry(_wordController.text);
-                    value.add(_wordController.text);
+                    provider.add(entry);
                     _pronunciation = entry.pronunciation;
+
                     setState(() {
                       _definition = entry.definition;
                     });
