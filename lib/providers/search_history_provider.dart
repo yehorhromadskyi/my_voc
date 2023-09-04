@@ -21,21 +21,34 @@ class SearchHistoryProvider extends ChangeNotifier {
   Future<void> add(Entry record) async {
     await init();
 
-    await _isar!.writeTxn(() async {
-      await _isar!.entrys.put(record);
-    });
+    var existing =
+        await _isar!.entrys.where().filter().wordEqualTo(record.word).findAll();
 
-    _history.add(record);
+    if (existing.isEmpty) {
+      await _isar!.writeTxn(() async {
+        await _isar!.entrys.put(record);
+      });
 
+      _history.add(record);
+      notifyListeners();
+    }
+  }
+
+  Future<void> remove(Entry entry) async {
+    await init();
+
+    _history.remove(entry);
     notifyListeners();
+
+    await _isar!.writeTxn(() async {
+      final success = await _isar!.entrys.delete(entry.id);
+    });
   }
 
   Future<void> loadHistory() async {
     await init();
 
-    var entries = await _isar!.txn(() async {
-      return await _isar!.entrys.where().findAll();
-    });
+    var entries = await _isar!.entrys.where().findAll();
 
     _history.addAll(entries);
 
