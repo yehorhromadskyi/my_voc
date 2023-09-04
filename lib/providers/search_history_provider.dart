@@ -18,11 +18,17 @@ class SearchHistoryProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> add(Entry record) async {
+  Future<List<Entry>> get(String word) async {
     await init();
 
     var existing =
-        await _isar!.entrys.where().filter().wordEqualTo(record.word).findAll();
+        await _isar!.entrys.where().filter().wordEqualTo(word).findAll();
+
+    return existing;
+  }
+
+  Future<void> add(Entry record) async {
+    var existing = await get(record.word);
 
     if (existing.isEmpty) {
       await _isar!.writeTxn(() async {

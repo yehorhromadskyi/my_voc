@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:my_voc/models/entry.dart' as models;
 import 'package:my_voc/providers/api_service_provider.dart';
 import 'package:my_voc/providers/search_history_provider.dart';
 import 'package:provider/provider.dart';
@@ -41,11 +42,20 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    final apiServiceProvider =
-                        Provider.of<ApiServiceProvider>(context, listen: false);
-                    var entry = await apiServiceProvider.apiService
-                        .getEntry(_wordController.text);
-                    provider.add(entry);
+                    models.Entry entry;
+                    final existing = await provider.get(_wordController.text);
+                    if (existing.isEmpty) {
+                      final apiServiceProvider =
+                          Provider.of<ApiServiceProvider>(context,
+                              listen: false);
+                      entry = await apiServiceProvider.apiService
+                          .getEntry(_wordController.text);
+
+                      provider.add(entry);
+                    } else {
+                      entry = existing.first;
+                    }
+
                     _pronunciation = entry.pronunciation;
 
                     setState(() {
