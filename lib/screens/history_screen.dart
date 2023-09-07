@@ -9,18 +9,6 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   @override
-  void initState() {
-    super.initState();
-
-    loadData();
-  }
-
-  Future<void> loadData() async {
-    var provider = Provider.of<SearchHistoryProvider>(context, listen: false);
-    await provider.loadHistory();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Consumer<SearchHistoryProvider>(
       builder: (context, provider, child) => Container(

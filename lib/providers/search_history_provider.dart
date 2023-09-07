@@ -35,7 +35,7 @@ class SearchHistoryProvider extends ChangeNotifier {
         await _isar!.entrys.put(record);
       });
 
-      _history.add(record);
+      _history.insert(0, record);
       notifyListeners();
     }
   }
@@ -55,8 +55,7 @@ class SearchHistoryProvider extends ChangeNotifier {
     await init();
 
     var entries = await _isar!.entrys.where().findAll();
-
-    _history.addAll(entries);
+    _history.addAll(entries.reversed);
 
     notifyListeners();
   }

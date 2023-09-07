@@ -18,6 +18,18 @@ class _SearchScreenState extends State<SearchScreen> {
   String _pronunciation = '';
 
   @override
+  void initState() {
+    super.initState();
+
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    var provider = Provider.of<SearchHistoryProvider>(context, listen: false);
+    await provider.loadHistory();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<SearchHistoryProvider>(
       builder: (context, provider, child) => Container(
@@ -70,6 +82,61 @@ class _SearchScreenState extends State<SearchScreen> {
               height: 50.0,
             ),
             Text(_definition),
+            Expanded(
+              child: ListView.separated(
+                separatorBuilder: (context, index) {
+                  return Divider(
+                    height: 0,
+                  );
+                },
+                itemCount: provider.history.length,
+                itemBuilder: (context, index) {
+                  final entry = provider.history[index];
+                  return Dismissible(
+                    key: Key(entry.id.toString()),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 8.0),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                            size: 18.0,
+                          ),
+                        ),
+                      ),
+                      color: Colors.red,
+                    ),
+                    onDismissed: (direction) {
+                      if (direction == DismissDirection.endToStart) {
+                        provider.remove(entry);
+                      }
+                    },
+                    child: GestureDetector(
+                      onTap: () {
+                        _wordController.text = entry.word;
+                        _pronunciation = entry.pronunciation;
+                        setState(() {
+                          _definition = entry.definition;
+                        });
+                      },
+                      child: ListTile(
+                        title: Container(
+                          child: Text(
+                            provider.history[index].word,
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
           ],
         ),
       ),
