@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:isar/isar.dart';
 
 part 'entry.g.dart';
@@ -10,8 +12,20 @@ class Entry {
   String definition;
   String pronunciation;
 
+  @ignore
+  late List<String> guess;
+  @ignore
+  late List<int> sequence;
+  @ignore
+  late List<String> shuffled;
+
   Entry(
       {required this.word,
       required this.definition,
-      required this.pronunciation});
+      required this.pronunciation}) {
+    guess = List.filled(word.length, '');
+    shuffled = word.split('');
+    shuffled.shuffle(Random());
+    sequence = List.empty(growable: true);
   }
+}

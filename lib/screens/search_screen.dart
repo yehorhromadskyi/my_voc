@@ -40,7 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
               children: [
                 TextButton(
                   onPressed: () async {
-                    var duration = await player.setUrl(_pronunciation);
+                    await player.setUrl(_pronunciation);
                     player.play();
                   },
                   child: Icon(
@@ -79,9 +79,15 @@ class _SearchScreenState extends State<SearchScreen> {
               ],
             ),
             SizedBox(
-              height: 50.0,
+              height: 40.0,
             ),
-            Text(_definition),
+            Text(
+              _definition,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 40.0,
+            ),
             Expanded(
               child: ListView.separated(
                 separatorBuilder: (context, index) {
@@ -127,7 +133,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           child: Text(
                             provider.history[index].word,
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 14,
                             ),
                           ),
                         ),
