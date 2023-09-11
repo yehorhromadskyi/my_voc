@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_voc/providers/search_history_provider.dart';
+import 'package:my_voc/providers/search_screen_provider.dart';
 import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -10,7 +10,7 @@ class HistoryScreen extends StatefulWidget {
 class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<SearchHistoryProvider>(
+    return Consumer<SearchScreenProvider>(
       builder: (context, provider, child) => Container(
         child: ListView.separated(
           separatorBuilder: (context, index) {

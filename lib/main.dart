@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:my_voc/providers/api_service_provider.dart';
-import 'package:my_voc/providers/search_history_provider.dart';
+import 'package:my_voc/providers/search_screen_provider.dart';
 import 'package:my_voc/screens/home_screen.dart';
+import 'package:my_voc/services/api_service.dart';
+import 'package:my_voc/services/database_service.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -18,8 +19,16 @@ class MyApp extends StatelessWidget {
       ),
       home: MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => SearchHistoryProvider()),
-          ChangeNotifierProvider(create: (_) => ApiServiceProvider())
+          Provider<DatabaseService>(create: (_) => DatabaseService()),
+          Provider<ApiService>(create: (_) => ApiService()),
+          ChangeNotifierProvider(
+            create: (context) {
+              var databaseService =
+                  Provider.of<DatabaseService>(context, listen: false);
+              var apiService = Provider.of<ApiService>(context, listen: false);
+              return SearchScreenProvider(databaseService, apiService);
+            },
+          ),
         ],
         child: HomeScreen(),
       ),

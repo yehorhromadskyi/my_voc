@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_voc/models/entry.dart' as models;
-import 'package:my_voc/providers/api_service_provider.dart';
-import 'package:my_voc/providers/search_history_provider.dart';
+import 'package:my_voc/providers/search_screen_provider.dart';
 import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -14,9 +12,6 @@ class _SearchScreenState extends State<SearchScreen> {
   TextEditingController _wordController = TextEditingController();
   AudioPlayer player = AudioPlayer();
 
-  String _definition = '';
-  String _pronunciation = '';
-
   @override
   void initState() {
     super.initState();
@@ -25,13 +20,13 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> loadData() async {
-    var provider = Provider.of<SearchHistoryProvider>(context, listen: false);
+    var provider = Provider.of<SearchScreenProvider>(context, listen: false);
     await provider.loadHistory();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SearchHistoryProvider>(
+    return Consumer<SearchScreenProvider>(
       builder: (context, provider, child) => Container(
         padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
         child: Column(
@@ -40,8 +35,11 @@ class _SearchScreenState extends State<SearchScreen> {
               children: [
                 TextButton(
                   onPressed: () async {
-                    await player.setUrl(_pronunciation);
-                    player.play();
+                    if (provider.selectedEntry != null) {
+                      await player
+                          .setUrl(provider.selectedEntry!.pronunciation);
+                      player.play();
+                    }
                   },
                   child: Icon(
                     Icons.volume_up_rounded,
@@ -54,25 +52,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    models.Entry entry;
-                    final existing = await provider.get(_wordController.text);
-                    if (existing.isEmpty) {
-                      final apiServiceProvider =
-                          Provider.of<ApiServiceProvider>(context,
-                              listen: false);
-                      entry = await apiServiceProvider.apiService
-                          .getEntry(_wordController.text);
-
-                      provider.add(entry);
-                    } else {
-                      entry = existing.first;
-                    }
-
-                    _pronunciation = entry.pronunciation;
-
-                    setState(() {
-                      _definition = entry.definition;
-                    });
+                    final entry = await provider.get(_wordController.text);
+                    provider.selectedEntry = entry;
                   },
                   child: Icon(Icons.search),
                 ),
@@ -82,7 +63,7 @@ class _SearchScreenState extends State<SearchScreen> {
               height: 40.0,
             ),
             Text(
-              _definition,
+              provider.selectedEntry?.definition ?? '',
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -123,10 +104,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: GestureDetector(
                       onTap: () {
                         _wordController.text = entry.word;
-                        _pronunciation = entry.pronunciation;
-                        setState(() {
-                          _definition = entry.definition;
-                        });
+                        provider.selectedEntry = entry;
                       },
                       child: ListTile(
                         title: Container(

@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_voc/providers/search_history_provider.dart';
+import 'package:my_voc/providers/search_screen_provider.dart';
 import 'package:provider/provider.dart';
 
 class ReviewScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SearchHistoryProvider>(
+    return Consumer<SearchScreenProvider>(
       builder: (context, provider, child) => PageView.builder(
         physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
