@@ -22,6 +22,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   Widget build(BuildContext context) {
     return Consumer<SearchHistoryProvider>(
       builder: (context, provider, child) => PageView.builder(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         itemCount: provider.history.length,
         itemBuilder: (context, index) {
@@ -60,27 +61,26 @@ class _ReviewScreenState extends State<ReviewScreen> {
               ),
               Wrap(
                 alignment: WrapAlignment.center,
+                spacing: 6.0,
+                runSpacing: 8.0,
                 children: List.generate(
                   currentEntry.word.length,
-                  (i) => Padding(
-                    padding: const EdgeInsets.only(left: 6.0, bottom: 8.0),
-                    child: SizedBox(
-                      width: 20.0,
-                      child: Container(
-                        child: Column(
-                          children: [
-                            Text(
-                              currentEntry.guess[i],
-                              style: TextStyle(fontSize: 20.0),
-                            ),
-                          ],
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1.0,
-                            ),
+                  (i) => SizedBox(
+                    width: 20.0,
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Text(
+                            currentEntry.guess[i],
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                        ],
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.grey,
+                            width: 1.0,
                           ),
                         ),
                       ),
@@ -88,30 +88,29 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   ),
                 ),
               ),
-              SizedBox(width: 8.0),
+              SizedBox(height: 24.0),
               Wrap(
+                spacing: 6.0,
+                runSpacing: 8.0,
                 children: List.generate(
                   currentEntry.shuffled.length,
                   (i) {
                     var firstEmpty = currentEntry.guess.indexOf('');
 
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 6.0, bottom: 8.0),
-                      child: ElevatedButton(
-                        onPressed: currentEntry.sequence.contains(i)
-                            ? null
-                            : () {
-                                setState(() {
-                                  currentEntry.guess[firstEmpty] =
-                                      currentEntry.shuffled[i];
+                    return ElevatedButton(
+                      onPressed: currentEntry.sequence.contains(i)
+                          ? null
+                          : () {
+                              setState(() {
+                                currentEntry.guess[firstEmpty] =
+                                    currentEntry.shuffled[i];
 
-                                  currentEntry.sequence.add(i);
-                                });
-                              },
-                        child: Text(
-                          currentEntry.shuffled[i],
-                          style: TextStyle(fontSize: 20.0),
-                        ),
+                                currentEntry.sequence.add(i);
+                              });
+                            },
+                      child: Text(
+                        currentEntry.shuffled[i],
+                        style: TextStyle(fontSize: 20.0),
                       ),
                     );
                   },
@@ -168,5 +167,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }
