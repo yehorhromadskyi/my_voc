@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:isar/isar.dart';
 
 part 'entry.g.dart';
@@ -24,8 +22,7 @@ class Entry {
       required this.definition,
       required this.pronunciation}) {
     guess = List.filled(word.length, '');
-    shuffled = word.split('');
-    shuffled.shuffle(Random());
+    shuffled = [];
     sequence = List.empty(growable: true);
   }
 }

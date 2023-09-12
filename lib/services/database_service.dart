@@ -1,15 +1,39 @@
+import 'dart:async';
+
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../models/entry.dart';
 
 class DatabaseService {
+  static final DatabaseService _instance = DatabaseService._internal();
+
+  factory DatabaseService() {
+    return _instance;
+  }
+
+  DatabaseService._internal();
+
   Isar? _isar;
 
+  Completer? _completer;
+
   Future<void> init() async {
+    if (_completer != null) {
+      await _completer!.future;
+    }
+
+    if (_completer == null) {
+      _completer = Completer();
+    }
+
     if (_isar == null) {
       final dir = await getApplicationDocumentsDirectory();
       _isar = await Isar.open([EntrySchema], directory: dir.path);
+
+      if (!_completer!.isCompleted) {
+        _completer!.complete();
+      }
     }
   }
 

@@ -1,8 +1,6 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:my_voc/providers/search_screen_provider.dart';
+import 'package:my_voc/providers/review_screen_provider.dart';
 import 'package:provider/provider.dart';
 
 class ReviewScreen extends StatefulWidget {
@@ -16,17 +14,27 @@ class _ReviewScreenState extends State<ReviewScreen> {
   final PageController _pageController = PageController();
   final AudioPlayer _player = AudioPlayer();
 
-  final HashMap<int, bool> _results = HashMap();
+  @override
+  void initState() {
+    super.initState();
+
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    var provider = Provider.of<ReviewScreenProvider>(context, listen: false);
+    await provider.load();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SearchScreenProvider>(
+    return Consumer<ReviewScreenProvider>(
       builder: (context, provider, child) => PageView.builder(
         physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
-        itemCount: provider.history.length,
+        itemCount: provider.forReview.length,
         itemBuilder: (context, index) {
-          var currentEntry = provider.history[index];
+          var currentEntry = provider.forReview[index];
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -36,14 +44,14 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 child: Stack(
                   children: [
                     Visibility(
-                      visible: _results[index] ?? false,
+                      visible: provider.results[index] ?? false,
                       child: Icon(
                         Icons.check,
                         color: Colors.green,
                       ),
                     ),
                     Visibility(
-                      visible: (_results[index] ?? true) ? false : true,
+                      visible: (provider.results[index] ?? true) ? false : true,
                       child: Icon(
                         Icons.close,
                         color: Colors.red,
@@ -124,7 +132,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     ElevatedButton(
                       onPressed: () async {
                         setState(() {
-                          _results[index] =
+                          provider.results[index] =
                               currentEntry.guess.join().toLowerCase() ==
                                   currentEntry.word.toLowerCase();
                         });
