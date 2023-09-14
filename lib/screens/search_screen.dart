@@ -70,9 +70,18 @@ class _SearchScreenState extends State<SearchScreen> {
             SizedBox(
               height: 40.0,
             ),
-            Text(
-              provider.selectedEntry?.definition ?? '',
-              textAlign: TextAlign.center,
+            Stack(
+              children: [
+                if (!provider.isLoading)
+                  Text(
+                    provider.selectedEntry?.definition ?? '',
+                    textAlign: TextAlign.center,
+                  ),
+                if (provider.isLoading)
+                  Align(
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator())
+              ],
             ),
             SizedBox(
               height: 40.0,

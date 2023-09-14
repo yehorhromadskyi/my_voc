@@ -16,6 +16,13 @@ class SearchScreenProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
   final DatabaseService _databaseService;
   final ApiService _apiService;
   final FileService _fileService;
@@ -27,11 +34,15 @@ class SearchScreenProvider extends ChangeNotifier {
     var existing = await _databaseService.get(word);
 
     if (existing.isEmpty) {
+      isLoading = true;
+
       var entry = await _apiService.getEntry(word);
       entry.cachedPronunciation =
           await _fileService.saveFile(entry.pronunciation, entry.word + '.mp3');
       existing.add(entry);
       add(entry);
+
+      isLoading = false;
     }
 
     return existing.first;
