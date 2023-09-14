@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_voc/services/database_service.dart';
+import 'package:my_voc/services/file_service.dart';
 
 import '../models/entry.dart';
 import '../services/api_service.dart';
@@ -17,14 +18,18 @@ class SearchScreenProvider extends ChangeNotifier {
 
   final DatabaseService _databaseService;
   final ApiService _apiService;
+  final FileService _fileService;
 
-  SearchScreenProvider(this._databaseService, this._apiService);
+  SearchScreenProvider(
+      this._databaseService, this._apiService, this._fileService);
 
   Future<Entry> get(String word) async {
     var existing = await _databaseService.get(word);
 
     if (existing.isEmpty) {
       var entry = await _apiService.getEntry(word);
+      entry.cachedPronunciation =
+          await _fileService.saveFile(entry.pronunciation, entry.word + '.mp3');
       existing.add(entry);
       add(entry);
     }
@@ -41,6 +46,9 @@ class SearchScreenProvider extends ChangeNotifier {
 
   Future<void> remove(Entry entry) async {
     bool success = await _databaseService.remove(entry);
+    if (entry.cachedPronunciation?.isNotEmpty ?? false) {
+      await _fileService.removeFile(entry.cachedPronunciation!);
+    }
 
     if (success) {
       _history.remove(entry);

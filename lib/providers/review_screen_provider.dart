@@ -30,9 +30,9 @@ class ReviewScreenProvider extends ChangeNotifier {
       if (diff > 0) {
         _alphabet.shuffle(Random());
         entry.shuffled.addAll(_alphabet.take(diff));
-        entry.shuffled.addAll(entry.word.split(''));
-        entry.shuffled.shuffle(Random());
       }
+      entry.shuffled.addAll(entry.word.split(''));
+      entry.shuffled.shuffle(Random());
     }
 
     _forReview.addAll(entries);

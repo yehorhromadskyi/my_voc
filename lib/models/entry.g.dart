@@ -17,18 +17,23 @@ const EntrySchema = CollectionSchema(
   name: r'Entry',
   id: 744406108402872943,
   properties: {
-    r'definition': PropertySchema(
+    r'cachedPronunciation': PropertySchema(
       id: 0,
+      name: r'cachedPronunciation',
+      type: IsarType.string,
+    ),
+    r'definition': PropertySchema(
+      id: 1,
       name: r'definition',
       type: IsarType.string,
     ),
     r'pronunciation': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'pronunciation',
       type: IsarType.string,
     ),
     r'word': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'word',
       type: IsarType.string,
     )
@@ -53,6 +58,12 @@ int _entryEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.cachedPronunciation;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.definition.length * 3;
   bytesCount += 3 + object.pronunciation.length * 3;
   bytesCount += 3 + object.word.length * 3;
@@ -65,9 +76,10 @@ void _entrySerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.definition);
-  writer.writeString(offsets[1], object.pronunciation);
-  writer.writeString(offsets[2], object.word);
+  writer.writeString(offsets[0], object.cachedPronunciation);
+  writer.writeString(offsets[1], object.definition);
+  writer.writeString(offsets[2], object.pronunciation);
+  writer.writeString(offsets[3], object.word);
 }
 
 Entry _entryDeserialize(
@@ -77,10 +89,11 @@ Entry _entryDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Entry(
-    definition: reader.readString(offsets[0]),
-    pronunciation: reader.readString(offsets[1]),
-    word: reader.readString(offsets[2]),
+    definition: reader.readString(offsets[1]),
+    pronunciation: reader.readString(offsets[2]),
+    word: reader.readString(offsets[3]),
   );
+  object.cachedPronunciation = reader.readStringOrNull(offsets[0]);
   object.id = id;
   return object;
 }
@@ -93,10 +106,12 @@ P _entryDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -191,6 +206,158 @@ extension EntryQueryWhere on QueryBuilder<Entry, Entry, QWhereClause> {
 }
 
 extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
+  QueryBuilder<Entry, Entry, QAfterFilterCondition>
+      cachedPronunciationIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'cachedPronunciation',
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition>
+      cachedPronunciationIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'cachedPronunciation',
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> cachedPronunciationEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'cachedPronunciation',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition>
+      cachedPronunciationGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'cachedPronunciation',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> cachedPronunciationLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'cachedPronunciation',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> cachedPronunciationBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'cachedPronunciation',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition>
+      cachedPronunciationStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'cachedPronunciation',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> cachedPronunciationEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'cachedPronunciation',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> cachedPronunciationContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'cachedPronunciation',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> cachedPronunciationMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'cachedPronunciation',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition>
+      cachedPronunciationIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'cachedPronunciation',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition>
+      cachedPronunciationIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'cachedPronunciation',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterFilterCondition> definitionEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -637,6 +804,18 @@ extension EntryQueryObject on QueryBuilder<Entry, Entry, QFilterCondition> {}
 extension EntryQueryLinks on QueryBuilder<Entry, Entry, QFilterCondition> {}
 
 extension EntryQuerySortBy on QueryBuilder<Entry, Entry, QSortBy> {
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByCachedPronunciation() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cachedPronunciation', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> sortByCachedPronunciationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cachedPronunciation', Sort.desc);
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterSortBy> sortByDefinition() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'definition', Sort.asc);
@@ -675,6 +854,18 @@ extension EntryQuerySortBy on QueryBuilder<Entry, Entry, QSortBy> {
 }
 
 extension EntryQuerySortThenBy on QueryBuilder<Entry, Entry, QSortThenBy> {
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByCachedPronunciation() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cachedPronunciation', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterSortBy> thenByCachedPronunciationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cachedPronunciation', Sort.desc);
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterSortBy> thenByDefinition() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'definition', Sort.asc);
@@ -725,6 +916,14 @@ extension EntryQuerySortThenBy on QueryBuilder<Entry, Entry, QSortThenBy> {
 }
 
 extension EntryQueryWhereDistinct on QueryBuilder<Entry, Entry, QDistinct> {
+  QueryBuilder<Entry, Entry, QDistinct> distinctByCachedPronunciation(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'cachedPronunciation',
+          caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Entry, Entry, QDistinct> distinctByDefinition(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -752,6 +951,12 @@ extension EntryQueryProperty on QueryBuilder<Entry, Entry, QQueryProperty> {
   QueryBuilder<Entry, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Entry, String?, QQueryOperations> cachedPronunciationProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'cachedPronunciation');
     });
   }
 

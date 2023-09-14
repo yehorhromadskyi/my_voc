@@ -10,6 +10,8 @@ class Entry {
   String definition;
   String pronunciation;
 
+  String? cachedPronunciation;
+
   @ignore
   late List<String> guess;
   @ignore

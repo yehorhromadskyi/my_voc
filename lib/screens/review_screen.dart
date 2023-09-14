@@ -137,8 +137,17 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                   currentEntry.word.toLowerCase();
                         });
 
-                        var duration =
-                            await _player.setUrl(currentEntry.pronunciation);
+                        Duration? duration;
+
+                        if (currentEntry.cachedPronunciation?.isNotEmpty ??
+                            false) {
+                          duration = await _player
+                              .setFilePath(currentEntry.cachedPronunciation!);
+                        } else {
+                          duration =
+                              await _player.setUrl(currentEntry.pronunciation);
+                        }
+
                         _player.play();
 
                         if (duration != null) {

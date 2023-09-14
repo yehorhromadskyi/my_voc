@@ -4,6 +4,7 @@ import 'package:my_voc/providers/search_screen_provider.dart';
 import 'package:my_voc/screens/home_screen.dart';
 import 'package:my_voc/services/api_service.dart';
 import 'package:my_voc/services/database_service.dart';
+import 'package:my_voc/services/file_service.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -22,11 +23,14 @@ class MyApp extends StatelessWidget {
         providers: [
           Provider<DatabaseService>(create: (_) => DatabaseService()),
           Provider<ApiService>(create: (_) => ApiService()),
+          Provider<FileService>(create: (_) => FileService()),
           ChangeNotifierProvider(create: (context) {
             var databaseService =
                 Provider.of<DatabaseService>(context, listen: false);
             var apiService = Provider.of<ApiService>(context, listen: false);
-            return SearchScreenProvider(databaseService, apiService);
+            var fileService = Provider.of<FileService>(context, listen: false);
+            return SearchScreenProvider(
+                databaseService, apiService, fileService);
           }),
           ChangeNotifierProvider(create: (context) {
             var databaseService =

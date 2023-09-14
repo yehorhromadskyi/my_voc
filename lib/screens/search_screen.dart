@@ -36,8 +36,16 @@ class _SearchScreenState extends State<SearchScreen> {
                 TextButton(
                   onPressed: () async {
                     if (provider.selectedEntry != null) {
-                      await player
-                          .setUrl(provider.selectedEntry!.pronunciation);
+                      if (provider
+                              .selectedEntry!.cachedPronunciation?.isNotEmpty ??
+                          false) {
+                        await player.setFilePath(
+                            provider.selectedEntry!.cachedPronunciation!);
+                      } else {
+                        await player
+                            .setUrl(provider.selectedEntry!.pronunciation);
+                      }
+
                       player.play();
                     }
                   },
