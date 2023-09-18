@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_voc/providers/review_screen_provider.dart';
 import 'package:my_voc/providers/search_screen_provider.dart';
 import 'package:my_voc/screens/home_screen.dart';
 import 'package:my_voc/services/api_service.dart';
@@ -31,11 +30,6 @@ class MyApp extends StatelessWidget {
             var fileService = Provider.of<FileService>(context, listen: false);
             return SearchScreenProvider(
                 databaseService, apiService, fileService);
-          }),
-          ChangeNotifierProvider(create: (context) {
-            var databaseService =
-                Provider.of<DatabaseService>(context, listen: false);
-            return ReviewScreenProvider(databaseService);
           }),
         ],
         child: HomeScreen(),

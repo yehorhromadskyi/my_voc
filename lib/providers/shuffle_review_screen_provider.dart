@@ -6,7 +6,7 @@ import 'package:my_voc/services/database_service.dart';
 
 import '../models/entry.dart';
 
-class ReviewScreenProvider extends ChangeNotifier {
+class ShuffleReviewScreenProvider extends ChangeNotifier {
   late final List<String> _alphabet;
 
   final List<Entry> _forReview = [];
@@ -17,7 +17,9 @@ class ReviewScreenProvider extends ChangeNotifier {
   final HashMap<int, bool> _results = HashMap();
   HashMap<int, bool> get results => _results;
 
-  ReviewScreenProvider(this._databaseService) {
+  double progress = 0.0;
+
+  ShuffleReviewScreenProvider(this._databaseService) {
     _alphabet = List.generate(
         26, (index) => String.fromCharCode('a'.codeUnitAt(0) + index));
   }
@@ -36,6 +38,15 @@ class ReviewScreenProvider extends ChangeNotifier {
     }
 
     _forReview.addAll(entries);
+
+    notifyListeners();
+  }
+
+  void check(int index) {
+    results[index] = forReview[index].guess.join().toLowerCase() ==
+        forReview[index].word.toLowerCase();
+    progress = (index + 1) / forReview.length;
+
     notifyListeners();
   }
 }
