@@ -58,25 +58,27 @@ class _ShuffleReviewScreenState extends State<ShuffleReviewScreen> {
                       Container(
                         width: 50.0,
                         height: 50.0,
-                        child: Stack(
-                          children: [
-                            Visibility(
-                              visible: provider.results[index] ?? false,
-                              child: Icon(
-                                Icons.check,
-                                color: Colors.green,
+                        child: Center(
+                          child: Stack(
+                            children: [
+                              Visibility(
+                                visible: provider.results[index] ?? false,
+                                child: Icon(
+                                  Icons.check,
+                                  color: Colors.green,
+                                ),
                               ),
-                            ),
-                            Visibility(
-                              visible: (provider.results[index] ?? true)
-                                  ? false
-                                  : true,
-                              child: Icon(
-                                Icons.close,
-                                color: Colors.red,
-                              ),
-                            )
-                          ],
+                              Visibility(
+                                visible: (provider.results[index] ?? true)
+                                    ? false
+                                    : true,
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.red,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                       Container(
