@@ -7,8 +7,6 @@ import 'package:my_voc/services/database_service.dart';
 import '../models/entry.dart';
 
 class ShuffleReviewScreenProvider extends ChangeNotifier {
-  late final List<String> _alphabet;
-
   final List<Entry> _forReview = [];
   List<Entry> get forReview => _forReview;
 
@@ -19,21 +17,11 @@ class ShuffleReviewScreenProvider extends ChangeNotifier {
 
   double progress = 0.0;
 
-  ShuffleReviewScreenProvider(this._databaseService) {
-    _alphabet = List.generate(
-        26, (index) => String.fromCharCode('a'.codeUnitAt(0) + index));
-  }
+  ShuffleReviewScreenProvider(this._databaseService) {}
 
   Future<void> load() async {
     var entries = await _databaseService.getAll();
-
     for (var entry in entries) {
-      var diff = 12 - entry.word.length;
-      if (diff > 0) {
-        _alphabet.shuffle(Random());
-        entry.shuffled.addAll(_alphabet.take(diff));
-      }
-      entry.shuffled.addAll(entry.word.split(''));
       entry.shuffled.shuffle(Random());
     }
 

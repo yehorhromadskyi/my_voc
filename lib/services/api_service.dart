@@ -24,8 +24,18 @@ class ApiService {
         var pronunciation = decodedResponse['results'][0]['lexicalEntries'][0]
             ['entries'][0]['pronunciations'][0]['audioFile'];
 
+        var examples = (decodedResponse['results'][0]['lexicalEntries'][0]
+                    ['entries'][0]['senses'][0]['examples'][0]
+                as Map<String, dynamic>)
+            .entries
+            .map((example) => example.value.toString())
+            .toList();
+
         return Entry(
-            word: word, definition: definition, pronunciation: pronunciation);
+            word: word,
+            definition: definition,
+            pronunciation: pronunciation,
+            examples: examples);
       } catch (e) {
         print(e);
         throw Exception(e);

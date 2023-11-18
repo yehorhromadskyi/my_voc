@@ -9,6 +9,7 @@ class Entry {
   String word;
   String definition;
   String pronunciation;
+  List<String> examples;
 
   String? cachedPronunciation;
 
@@ -22,9 +23,10 @@ class Entry {
   Entry(
       {required this.word,
       required this.definition,
-      required this.pronunciation}) {
+      required this.pronunciation,
+      required this.examples}) {
     guess = List.filled(word.length, '');
-    shuffled = [];
+    shuffled = word.split('');
     sequence = List.empty(growable: true);
   }
 }

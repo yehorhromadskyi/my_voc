@@ -27,13 +27,18 @@ const EntrySchema = CollectionSchema(
       name: r'definition',
       type: IsarType.string,
     ),
-    r'pronunciation': PropertySchema(
+    r'examples': PropertySchema(
       id: 2,
+      name: r'examples',
+      type: IsarType.stringList,
+    ),
+    r'pronunciation': PropertySchema(
+      id: 3,
       name: r'pronunciation',
       type: IsarType.string,
     ),
     r'word': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'word',
       type: IsarType.string,
     )
@@ -65,6 +70,13 @@ int _entryEstimateSize(
     }
   }
   bytesCount += 3 + object.definition.length * 3;
+  bytesCount += 3 + object.examples.length * 3;
+  {
+    for (var i = 0; i < object.examples.length; i++) {
+      final value = object.examples[i];
+      bytesCount += value.length * 3;
+    }
+  }
   bytesCount += 3 + object.pronunciation.length * 3;
   bytesCount += 3 + object.word.length * 3;
   return bytesCount;
@@ -78,8 +90,9 @@ void _entrySerialize(
 ) {
   writer.writeString(offsets[0], object.cachedPronunciation);
   writer.writeString(offsets[1], object.definition);
-  writer.writeString(offsets[2], object.pronunciation);
-  writer.writeString(offsets[3], object.word);
+  writer.writeStringList(offsets[2], object.examples);
+  writer.writeString(offsets[3], object.pronunciation);
+  writer.writeString(offsets[4], object.word);
 }
 
 Entry _entryDeserialize(
@@ -90,8 +103,9 @@ Entry _entryDeserialize(
 ) {
   final object = Entry(
     definition: reader.readString(offsets[1]),
-    pronunciation: reader.readString(offsets[2]),
-    word: reader.readString(offsets[3]),
+    examples: reader.readStringList(offsets[2]) ?? [],
+    pronunciation: reader.readString(offsets[3]),
+    word: reader.readString(offsets[4]),
   );
   object.cachedPronunciation = reader.readStringOrNull(offsets[0]);
   object.id = id;
@@ -110,8 +124,10 @@ P _entryDeserializeProp<P>(
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 3:
+      return (reader.readString(offset)) as P;
+    case 4:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -485,6 +501,221 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
         property: r'definition',
         value: '',
       ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'examples',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'examples',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'examples',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'examples',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'examples',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'examples',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesElementContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'examples',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesElementMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'examples',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'examples',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition>
+      examplesElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'examples',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'examples',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'examples',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'examples',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'examples',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'examples',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> examplesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'examples',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -931,6 +1162,12 @@ extension EntryQueryWhereDistinct on QueryBuilder<Entry, Entry, QDistinct> {
     });
   }
 
+  QueryBuilder<Entry, Entry, QDistinct> distinctByExamples() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'examples');
+    });
+  }
+
   QueryBuilder<Entry, Entry, QDistinct> distinctByPronunciation(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -963,6 +1200,12 @@ extension EntryQueryProperty on QueryBuilder<Entry, Entry, QQueryProperty> {
   QueryBuilder<Entry, String, QQueryOperations> definitionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'definition');
+    });
+  }
+
+  QueryBuilder<Entry, List<String>, QQueryOperations> examplesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'examples');
     });
   }
 
