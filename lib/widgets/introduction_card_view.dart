@@ -6,12 +6,10 @@ import 'package:provider/provider.dart';
 class IntroductionCardView extends StatelessWidget {
   const IntroductionCardView({
     super.key,
-    required this.index,
-    required this.introCard,
+    required this.card,
   });
 
-  final int index;
-  final IntroductionCard introCard;
+  final IntroductionCard card;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +26,7 @@ class IntroductionCardView extends StatelessWidget {
                     top: 18.0,
                   ),
                   child: Text(
-                    introCard.word,
+                    card.word,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 30,
@@ -40,7 +38,7 @@ class IntroductionCardView extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    provider.play(index);
+                    provider.pronounce(card);
                   },
                   child: Icon(Icons.volume_up_rounded),
                 )
@@ -52,7 +50,7 @@ class IntroductionCardView extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 18.0),
               child: Text(
-                introCard.definition,
+                card.definition,
                 style: TextStyle(
                   fontSize: 16,
                 ),
@@ -66,7 +64,7 @@ class IntroductionCardView extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 18.0, right: 18.0),
                   child: Column(
                     children: List.generate(
-                      introCard.examples.length,
+                      card.examples.length,
                       (index) => Container(
                         decoration: BoxDecoration(
                           color: Colors.blue.withAlpha(50),
@@ -75,7 +73,7 @@ class IntroductionCardView extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 12.0),
                         child: Text(
-                          introCard.examples[index],
+                          card.examples[index],
                           style: TextStyle(
                             fontStyle: FontStyle.italic,
                           ),
