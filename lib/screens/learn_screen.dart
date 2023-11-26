@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_voc/models/introduction_card.dart';
-import 'package:my_voc/models/multiple_options_card.dart';
+import 'package:my_voc/widgets/introduction_card_view.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/learn_screen_provider.dart';
@@ -45,72 +45,11 @@ class _LearnScreenState extends State<LearnScreen> {
           itemBuilder: (context, index) {
             var card = provider.cards[index];
             switch (card.runtimeType) {
-              case MultipleOptionsCard:
-                return Container(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 18.0,
-                              top: 18.0,
-                            ),
-                            child: Text(
-                              provider.cards[index].word,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 36,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 4.0,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              provider.play(index);
-                            },
-                            child: Icon(Icons.volume_up_rounded),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                );
               case IntroductionCard:
-                return Container(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 18.0,
-                              top: 18.0,
-                            ),
-                            child: Text(
-                              provider.cards[index].word,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 36,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 4.0,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              provider.play(index);
-                            },
-                            child: Icon(Icons.volume_up_rounded),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                );
+                var introCard = card as IntroductionCard;
+                return IntroductionCardView(introCard: introCard, index: index);
+              case _:
+                return Container();
             }
           },
         ),

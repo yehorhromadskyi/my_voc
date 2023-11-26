@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:my_voc/models/introduction_card.dart';
-import 'package:my_voc/models/multiple_options_card.dart';
 
 import '../models/card.dart' as models;
 import '../services/database_service.dart';
@@ -20,10 +19,8 @@ class LearnScreenProvider extends ChangeNotifier {
     var entries = await _databaseService.getAll();
 
     _cards.addAll(entries.map((e) {
-      if (e.word == 'car')
-        return IntroductionCard(e.word, e.cachedPronunciation, e.definition);
-      else
-        return MultipleOptionsCard(e.word, e.cachedPronunciation);
+      return IntroductionCard(
+          e.word, e.cachedPronunciation, e.definition, e.examples);
     }));
 
     play(0);
